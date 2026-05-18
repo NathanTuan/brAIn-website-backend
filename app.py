@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = YOLO("Yolo26nBEST.pt")
+model = YOLO("Yolo26nBEST(2).pt")
 
 @app.get("/")
 def home():
