@@ -3,10 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 from PIL import Image
 import io
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+model = None
 
-# allow your GitHub Pages site to access this API
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global model
+    model = YOLO("Yolo26nBEST.pt")
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,8 +26,6 @@ app.add_middleware(
 @app.get("/")
 def home():
     return {"status": "working"}
-"""
-model = YOLO("Yolo26nBEST.pt")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
@@ -29,7 +35,6 @@ async def predict(file: UploadFile = File(...)):
     results = model(image, imgsz=640)
 
     detections = []
-
     for box in results[0].boxes:
         detections.append({
             "class": int(box.cls[0]),
@@ -38,5 +43,3 @@ async def predict(file: UploadFile = File(...)):
         })
 
     return {"detections": detections}
-
-"""
