@@ -15,6 +15,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def home():
+    return {"status": "working"}
+"""
 model = YOLO("Yolo26nBEST.pt")
 
 @app.post("/predict")
@@ -34,3 +38,5 @@ async def predict(file: UploadFile = File(...)):
         })
 
     return {"detections": detections}
+
+"""
