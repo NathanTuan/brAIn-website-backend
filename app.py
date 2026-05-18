@@ -3,17 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 from PIL import Image
 import io
-from contextlib import asynccontextmanager
 
-model = None
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global model
-    model = YOLO("Yolo26nBEST.pt")
-    yield
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +13,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+model = YOLO("Yolo26nBEST.pt")
 
 @app.get("/")
 def home():
